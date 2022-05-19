@@ -26,7 +26,7 @@ contract Lottery {
         return uint(keccak256(abi.encodePacked(block.difficulty, block.timestamp, players.length)));
     }
 
-    function pickWinner() public returns(address) {
+    function pickWinner() public {
         require(msg.sender == manager, "Only the manager can pick a winner");
         require(players.length >= minAmountPlayers, "At least 3 players must be in the lottery before picking a winner");
 
@@ -34,6 +34,5 @@ contract Lottery {
         address payable winner = players[winnerIndex];
 
         winner.transfer(getBalance());
-        return winner;
     }
 }
