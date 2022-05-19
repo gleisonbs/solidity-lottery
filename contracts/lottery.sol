@@ -26,13 +26,14 @@ contract Lottery {
         return uint(keccak256(abi.encodePacked(block.difficulty, block.timestamp, players.length)));
     }
 
-    function pickWinner() public view returns(address) {
+    function pickWinner() public returns(address) {
         require(msg.sender == manager, "Only the manager can pick a winner");
         require(players.length >= minAmountPlayers, "At least 3 players must be in the lottery before picking a winner");
 
         uint winnerIndex = random() % players.length;
         address payable winner = players[winnerIndex];
 
+        winner.transfer(getBalance());
         return winner;
     }
 }
