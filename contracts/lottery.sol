@@ -6,6 +6,7 @@ contract Lottery {
     address payable[] public players;
     address public manager;
     uint constant public fee = 0.1 ether;
+    uint constant public minAmountPlayers = 3;
 
     constructor() {
         manager = msg.sender;
@@ -23,5 +24,15 @@ contract Lottery {
 
     function random() public view returns(uint) {
         return uint(keccak256(abi.encodePacked(block.difficulty, block.timestamp, players.length)));
+    }
+
+    function pickWinner() public view returns(address) {
+        require(msg.sender == manager, "Only the manager can pick a winner");
+        require(players.length >= minAmountPlayers, "At least 3 players must be in the lottery before picking a winner");
+
+        uint winnerIndex = random() % players.length;
+        address payable winner = players[winnerIndex];
+
+        return winner;
     }
 }
